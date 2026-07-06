@@ -2,19 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="20dp">
 
     <Button
         android:id="@+id/btnTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Theme Settings" />
+        android:text="Theme Options" />
 
     <Button
         android:id="@+id/btnAccent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Accent Color" />
+        android:text="Accent Colors"
+        android:layout_marginTop="12dp"/>
 
 </LinearLayout>
