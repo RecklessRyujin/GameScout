@@ -1,101 +1,68 @@
-package com.gamescout;
+        }
+    }package com.gamescout;
 
 import android.os.Bundle;
-import androidx.appcompat.app.ActionBarDrawerToggle;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
-
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.navigation.NavigationView;
-
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    MaterialToolbar toolbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ThemeManager.init(this);
+
+        // Apply theme FIRST (important)
+        ThemeManager.applySavedTheme(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        drawerLayout = findViewById(R.id.drawerLayout);
-        navigationView = findViewById(R.id.navigationView);
-        toolbar = findViewById(R.id.topAppBar);
+        // ---------------- ACCENT COLOR APPLY ----------------
 
-        //setSupportActionBar(toolbar);
+        String accent = AccentManager.getAccent(this);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this,
-                drawerLayout,
-                toolbar,
-                R.string.open,
-                R.string.open
-        );
+        int color;
 
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        switch (accent) {
 
-        // 🔥 FIX: increase swipe edge area
-        increaseDrawerEdge();
+            case "red":
+                color = 0xFFE53935;
+                break;
 
-        if (savedInstanceState == null) {
-            loadFragment(new HomeFragment());
-            navigationView.setCheckedItem(R.id.nav_home);
+            case "orange":
+                color = 0xFFFB8C00;
+                break;
+
+            case "yellow":
+                color = 0xFFFDD835;
+                break;
+
+            case "green":
+                color = 0xFF43A047;
+                break;
+
+            case "purple":
+                color = 0xFF8E24AA;
+                break;
+
+            case "pink":
+                color = 0xFFD81B60;
+                break;
+
+            default:
+                color = 0xFF1E88E5;
+                break;
         }
 
-        navigationView.setNavigationItemSelectedListener(item -> {
+        // Toolbar (safe check so it doesn't crash if missing)
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
-    int id = item.getItemId();
-
-    if (id == R.id.nav_home) {
-        loadFragment(new HomeFragment());
-    } else if (id == R.id.nav_games) {
-        loadFragment(new GamesFragment());
-    } else if (id == R.id.nav_settings) {
-        loadFragment(new SettingsFragment());
-    } else if (id == R.id.nav_about) {
-        loadFragment(new AboutFragment());
-    }
-
-    drawerLayout.closeDrawers();
-    return true;
-});
-    }
-
-    private void loadFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
-                .commit();
-    }
-
-    // ✅ Swipe edge fix (no external files needed)
-    private void increaseDrawerEdge() {
-        try {
-            java.lang.reflect.Field mDragger = drawerLayout.getClass()
-                    .getDeclaredField("mLeftDragger");
-
-            mDragger.setAccessible(true);
-
-            androidx.customview.widget.ViewDragHelper dragger =
-                    (androidx.customview.widget.ViewDragHelper) mDragger.get(drawerLayout);
-
-            java.lang.reflect.Field mEdgeSize = dragger.getClass()
-                    .getDeclaredField("mEdgeSize");
-
-            mEdgeSize.setAccessible(true);
-
-            int edgeSize = mEdgeSize.getInt(dragger);
-
-            // 🔥 increase swipe zone (adjust 2–4 if you want more)
-            mEdgeSize.setInt(dragger, edgeSize * 3);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (toolbar != null) {
+            toolbar.setBackgroundColor(color);
         }
+
+        // Optional: status bar color (nice polish)
+        getWindow().setStatusBarColor(color);
     }
+}
 }
