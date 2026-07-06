@@ -48,25 +48,21 @@ public class MainActivity extends AppCompatActivity {
 
         navigationView.setNavigationItemSelectedListener(item -> {
 
-            int id = item.getItemId();
+    int id = item.getItemId();
 
-            if (id == R.id.nav_home) {
-                loadFragment(new HomeFragment());
-            } else if (id == R.id.nav_games) {
-                loadFragment(new GamesFragment());
-            } else if (id == R.id.nav_demos) {
-                loadFragment(new DemosFragment());
-            } else if (id == R.id.nav_wishlist) {
-                loadFragment(new WishlistFragment());
-            } else if (id == R.id.nav_settings) {
-                loadFragment(new SettingsFragment());
-            } else if (id == R.id.nav_about) {
-                loadFragment(new AboutFragment());
-            }
+    if (id == R.id.nav_home) {
+        loadFragment(new HomeFragment());
+    } else if (id == R.id.nav_games) {
+        loadFragment(new GamesFragment());
+    } else if (id == R.id.nav_settings) {
+        loadFragment(new SettingsFragment());
+    } else if (id == R.id.nav_about) {
+        loadFragment(new AboutFragment());
+    }
 
-            drawerLayout.closeDrawers();
-            return true;
-        });
+    drawerLayout.closeDrawers();
+    return true;
+});
     }
 
     private void loadFragment(Fragment fragment) {
