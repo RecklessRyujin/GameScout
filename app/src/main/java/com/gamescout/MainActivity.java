@@ -38,7 +38,9 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // default screen
+        // 🔥 FIX: increase swipe edge area
+        increaseDrawerEdge();
+
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment());
             navigationView.setCheckedItem(R.id.nav_home);
@@ -72,5 +74,31 @@ public class MainActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)
                 .commit();
+    }
+
+    // ✅ Swipe edge fix (no external files needed)
+    private void increaseDrawerEdge() {
+        try {
+            java.lang.reflect.Field mDragger = drawerLayout.getClass()
+                    .getDeclaredField("mLeftDragger");
+
+            mDragger.setAccessible(true);
+
+            androidx.customview.widget.ViewDragHelper dragger =
+                    (androidx.customview.widget.ViewDragHelper) mDragger.get(drawerLayout);
+
+            java.lang.reflect.Field mEdgeSize = dragger.getClass()
+                    .getDeclaredField("mEdgeSize");
+
+            mEdgeSize.setAccessible(true);
+
+            int edgeSize = mEdgeSize.getInt(dragger);
+
+            // 🔥 increase swipe zone (adjust 2–4 if you want more)
+            mEdgeSize.setInt(dragger, edgeSize * 3);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
