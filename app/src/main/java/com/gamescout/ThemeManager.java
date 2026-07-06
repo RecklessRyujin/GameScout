@@ -3,31 +3,12 @@ package com.gamescout;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.appcompat.app.AppCompatDelegate;
-
 public class ThemeManager {
 
     private static final String PREF = "gamescout_settings";
     private static final String KEY_THEME = "theme";
 
-    public static void applyTheme(String theme) {
-
-        switch (theme) {
-            case "light":
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                break;
-
-            case "dark":
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                break;
-
-            default:
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-                break;
-        }
-    }
-
-    public static void saveTheme(Context context, String theme) {
+    public static void setTheme(Context context, String theme) {
         SharedPreferences prefs = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
         prefs.edit().putString(KEY_THEME, theme).apply();
     }
@@ -37,7 +18,8 @@ public class ThemeManager {
         return prefs.getString(KEY_THEME, "system");
     }
 
-    public static void init(Context context) {
-        applyTheme(getTheme(context));
+    // Optional helper (use later in MainActivity)
+    public static boolean isDark(String theme) {
+        return theme.equals("dark");
     }
 }
