@@ -32,17 +32,32 @@ public class SettingsFragment extends Fragment {
 
     private void showThemeDialog() {
 
-        String[] options = {"System", "Light", "Dark"};
+    String[] options = {"System", "Light", "Dark"};
 
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Select Theme")
-                .setItems(options, (dialog, which) -> {
+    new AlertDialog.Builder(requireContext())
+            .setTitle("Select Theme")
+            .setItems(options, (dialog, which) -> {
 
-                    String selected = options[which].toLowerCase();
+                String selected;
 
-                    SettingsManager.setTheme(requireContext(), selected);
-                })
-                .show();
+                switch (which) {
+                    case 1:
+                        selected = "light";
+                        break;
+                    case 2:
+                        selected = "dark";
+                        break;
+                    default:
+                        selected = "system";
+                        break;
+                }
+
+                ThemeManager.saveTheme(requireContext(), selected);
+                ThemeManager.applyTheme(selected);
+
+                requireActivity().recreate(); // 👈 applies instantly
+            })
+            .show();
     }
 
     private void showAccentDialog() {
