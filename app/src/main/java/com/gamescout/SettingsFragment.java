@@ -5,78 +5,114 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class SettingsFragment extends Fragment {
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        Button themeBtn = root.findViewById(R.id.btnTheme);
-        Button accentBtn = root.findViewById(R.id.btnAccent);
+        // Buttons
+        View themeBtn = root.findViewById(R.id.btnTheme);
+        View accentBtn = root.findViewById(R.id.btnAccent);
 
         themeBtn.setOnClickListener(v -> showThemeDialog());
         accentBtn.setOnClickListener(v -> showAccentDialog());
 
+        // 🔥 APPLY SAVED ACCENT ON OPEN
+        String savedAccent = AccentManager.getAccent(requireContext());
+        applyAccentToUI(savedAccent);
+
         return root;
     }
 
+    // =========================
+    // THEME DIALOG
+    // =========================
     private void showThemeDialog() {
 
-    String[] options = {"System", "Light", "Dark"};
+        String[] options = {"System", "Light", "Dark"};
 
-    new AlertDialog.Builder(requireContext())
-            .setTitle("Select Theme")
-            .setItems(options, (dialog, which) -> {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Select Theme")
+                .setItems(options, (dialog, which) -> {
 
-                String selected;
+                    String selected = options[which].toLowerCase();
 
-                switch (which) {
-                    case 1:
-                        selected = "light";
-                        break;
-                    case 2:
-                        selected = "dark";
-                        break;
-                    default:
-                        selected = "system";
-                        break;
-                }
-
-                ThemeManager.saveTheme(requireContext(), selected);
-                ThemeManager.applyTheme(selected);
-
-                requireActivity().recreate(); // 👈 applies instantly
-            })
-            .show();
+                    ThemeManager.setTheme(requireContext(), selected);
+                })
+                .show();
     }
 
+    // =========================
+    // ACCENT DIALOG (FIXED)
+    // =========================
     private void showAccentDialog() {
 
-    String[] colors = {
-            "red", "orange", "yellow", "green", "blue", "purple", "pink"
-    };
+        String[] colors = {
+                "red", "orange", "yellow", "green", "blue", "purple", "pink"
+        };
 
-    new AlertDialog.Builder(requireContext())
-            .setTitle("Select Accent Color")
-            .setItems(colors, (dialog, which) -> {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Select Accent Color")
+                .setItems(colors, (dialog, which) -> {
 
-                String selected = colors[which];
+                    String selected = colors[which];
 
-                AccentManager.setAccent(requireContext(), selected);
+                    // Save
+                    AccentManager.setAccent(requireContext(), selected);
 
-                // 🔥 THIS is the missing part
-                applyAccentToUI(selected);
-            })
-            .show();
+                    // 🔥 APPLY INSTANTLY (THIS WAS MISSING)
+                    applyAccentToUI(selected);
+                })
+                .show();
+    }
+
+    // =========================
+    // APPLY ACCENT TO UI
+    // =========================
+    private void applyAccentToUI(String color) {
+
+        int parsedColor;
+
+        switch (color) {
+            case "red":
+                parsedColor = 0xFFE53935;
+                break;
+
+            case "orange":
+                parsedColor = 0xFFFB8C00;
+                break;
+
+            case "yellow":
+                parsedColor = 0xFFFDD835;
+                break;
+
+            case "green":
+                parsedColor = 0xFF43A047;
+                break;
+
+            case "purple":
+                parsedColor = 0xFF8E24AA;
+                break;
+
+            case "pink":
+                parsedColor = 0xFFD81B60;
+                break;
+
+            default:
+                parsedColor = 0xFF1E88E5;
+                break;
+        }
+
+        // Apply to whole fragment background (simple but works)
+        View root = getView();
+        if (root != null) {
+            root.setBackgroundColor(parsedColor);
+        }
     }
 }
