@@ -7,17 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class SettingsFragment extends Fragment {
 
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(android.R.layout.simple_list_item_1, container, false);
-
-        // Replace simple layout with buttons programmatically
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
 
         Button themeBtn = root.findViewById(R.id.btnTheme);
@@ -33,14 +34,13 @@ public class SettingsFragment extends Fragment {
 
         String[] options = {"System", "Light", "Dark"};
 
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(requireContext())
                 .setTitle("Select Theme")
                 .setItems(options, (dialog, which) -> {
 
                     String selected = options[which].toLowerCase();
 
-                    SettingsManager.setTheme(getContext(), selected);
-
+                    SettingsManager.setTheme(requireContext(), selected);
                 })
                 .show();
     }
@@ -51,12 +51,11 @@ public class SettingsFragment extends Fragment {
                 "Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Pink"
         };
 
-        new AlertDialog.Builder(getContext())
+        new AlertDialog.Builder(requireContext())
                 .setTitle("Select Accent Color")
                 .setItems(colors, (dialog, which) -> {
 
-                    SettingsManager.setAccent(getContext(), colors[which].toLowerCase());
-
+                    SettingsManager.setAccent(requireContext(), colors[which].toLowerCase());
                 })
                 .show();
     }
