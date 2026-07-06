@@ -62,16 +62,21 @@ public class SettingsFragment extends Fragment {
 
     private void showAccentDialog() {
 
-        String[] colors = {
-                "Red", "Orange", "Yellow", "Green", "Blue", "Purple", "Pink"
-        };
+    String[] colors = {
+            "red", "orange", "yellow", "green", "blue", "purple", "pink"
+    };
 
-        new AlertDialog.Builder(requireContext())
-                .setTitle("Select Accent Color")
-                .setItems(colors, (dialog, which) -> {
+    new AlertDialog.Builder(requireContext())
+            .setTitle("Select Accent Color")
+            .setItems(colors, (dialog, which) -> {
 
-                    SettingsManager.setAccent(requireContext(), colors[which].toLowerCase());
-                })
-                .show();
+                String selected = colors[which];
+
+                AccentManager.setAccent(requireContext(), selected);
+
+                // 🔥 THIS is the missing part
+                applyAccentToUI(selected);
+            })
+            .show();
     }
 }
